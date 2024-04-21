@@ -1,12 +1,8 @@
 import mongoose from 'mongoose';
 import { MongodbAdapter } from '@lucia-auth/adapter-mongodb';
-import { google } from '../auth';
  
 interface User {
   _id: string,
-  user_id: string,
-  userId: string,
-  id: string,
   email: string,
   picture: string,
   username: string,
@@ -17,29 +13,18 @@ const UserSchema = new mongoose.Schema<User>({
     type: String,
         required: true,
   },
-  user_id: {
+  email: {
     type: String,
-            required: true,
-      },
-      userId: {
-        type: String,
-        required: true,},
-        id: {
-          type: String,
-          required: true,
-        },
-        email: {
-          type: String,
-                    required: true,
-        },
-        picture: {
-          type: String,
-                    required: true,
-        },
-        username: {
-          type: String,
-                    required: true,
-        },
+        required: true,
+  },
+  picture: {
+    type: String,
+        required: true,
+  },
+  username: {
+    type: String,
+        required: true,
+  },
   //. . . other fields
 });
  
@@ -61,7 +46,7 @@ export const SessionSchema = new mongoose.Schema<Session>({
     type: Date,
     required: true,
   },
-});
+}, {timestamps: true});
 // adapter for lucia
 export const adapter = new MongodbAdapter(
   mongoose.connection.collection('sessions'),

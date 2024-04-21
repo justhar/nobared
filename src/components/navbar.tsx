@@ -4,9 +4,10 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Profile from "./profile";
+import { useSession } from "@/lib/providers/Sessions.provider";
 
 function Navbar() {
-  const session: boolean = true;
+  const { user } = useSession();
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center">
@@ -24,9 +25,9 @@ function Navbar() {
                 explore
               </Link>
             </div>
-            {session ? (
+            {user ? (
               <div className="flex items-center space-x-7">
-                <Profile session={session} />
+                <Profile user={user} />
               </div>
             ) : (
               <div className="flex items-center space-x-7">

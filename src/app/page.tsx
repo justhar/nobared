@@ -2,15 +2,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { validateRequest } from "@/lib/auth";
-import { lucia, getUser } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 
 export default async function Home() {
-  const user = await getUser();
-  console.log(user);
-  // console.log((await cookies().get(lucia.sessionCookieName)?.value) ?? null);
-  const session: boolean = true;
+  const user = await validateRequest();
+  // console.log(user);
   return (
     <main className="flex flex-col items-center justify-center min-h-[calc(100vh-5rem)] text-center px-3">
       <Alert className="sm:hidden mb-8">
@@ -28,7 +23,7 @@ export default async function Home() {
         together with our app.
       </p>
       <div className="flex flex-col md:flex-row justify-center pt-5 gap-7">
-        {!session ? (
+        {!user.user ? (
           <Button>
             <Link href="/signin" className="flex">
               <div className="flex text-center">Get Started</div>

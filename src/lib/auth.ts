@@ -1,10 +1,11 @@
- 
+
 import { Lucia } from 'lucia';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 import type { Session, User } from 'lucia';
 import { adapter } from './models/user'
 import { Google } from "arctic"
+import connectMongoDB from "@/lib/db"
 
 export const google = new Google(
   process.env.GOOGLE_CLIENT_ID!,
@@ -15,7 +16,8 @@ export const google = new Google(
 export const lucia = new Lucia(adapter, {
   getUserAttributes: (attributes) => {
 		return {
-			username: attributes.username
+			username: attributes.username,
+      picture: attributes.picture
 		};
 	},
   sessionCookie: {
@@ -31,7 +33,8 @@ export const validateRequest = cache(
     { user: User; session: Session } | { user: null; session: null }
   > => {
     const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
-    console.log(sessionId)
+    await connectMongoDB();
+    // console.log(sessionId)
     if (!sessionId) {
       return {
         user: null,
@@ -62,27 +65,6 @@ export const validateRequest = cache(
   }
 );
 
-export const getUser = cache(async () => {
-	const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
-    console.log(sessionId)
-	if (!sessionId) return null;
-	const { user, session } = await lucia.validateSession(sessionId);
-    console.log(user, session)
-	try {
-		if (session && session.fresh) {
-			const sessionCookie = lucia.createSessionCookie(session.id);
-			cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-		}
-		if (!session) {
-			const sessionCookie = lucia.createBlankSessionCookie();
-			cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-		}
-	} catch {
-		// Next.js throws error when attempting to set cookies when rendering page
-	}
-	return user;
-});
-
 declare module "lucia" {
 	interface Register {
 		Lucia: typeof lucia;
@@ -92,4 +74,5 @@ declare module "lucia" {
 
 interface DatabaseUserAttributes {
 	username: string;
+  picture: string;
 }

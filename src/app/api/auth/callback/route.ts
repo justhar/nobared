@@ -35,7 +35,7 @@ interface GoogleUser {
         const codeVerifier = cookies().get("codeVerifier")?.value
         const savedState = cookies().get("state")?.value
     
-        console.log({ codeVerifier, savedState, state })
+        // console.log({ codeVerifier, savedState, state })
     
         if (!codeVerifier || !savedState) {
           return NextResponse.json(
@@ -69,11 +69,11 @@ interface GoogleUser {
             method: "GET",
           }
         )
-        console.log({ accessToken, idToken, accessTokenExpiresAt, refreshToken })
+        // console.log({ accessToken, idToken, accessTokenExpiresAt, refreshToken })
     
         const googleData = (await googleRes.json()) as GoogleUser
     
-        console.log("google data", googleData)
+        // console.log("google data", googleData)
 
         //connectdb
         await connectMongoDB();
@@ -82,17 +82,12 @@ interface GoogleUser {
           try {          
             await User.create({ 
             _id: googleData.id,
-            user_id: googleData.id,
-            userId: googleData.id,
-            id: googleData.id,
             email: googleData.email,
             picture: googleData.picture,
             username: googleData.name,
           })
         } catch (err) 
         {console.log(err)}
-        } else {
-            console.log("update user")
         }
         // await db.transaction(async (trx) => {
         //   const user = await trx.query.userTable.findFirst({
@@ -180,8 +175,8 @@ interface GoogleUser {
         })
         const sessionCookie = lucia.createSessionCookie(session.id)
 
-        console.log("create session", session)
-        console.log("session cookie", sessionCookie)
+        // console.log("create session", session)
+        // console.log("session cookie", sessionCookie)
     
         cookies().set(
           sessionCookie.name,
