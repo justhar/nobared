@@ -1,28 +1,43 @@
 import mongoose from "mongoose";
+import { date } from "zod";
 
 interface Room {
-    id: string;
-    name: string;
-    desc: string;
-    user: [
-      anjya: string
-    ];
-  }
-   
-  const RoomShema = new mongoose.Schema<Room>({
+  id: string;
+  name: string;
+  desc: string;
+  user: [];
+  message: [];
+}
+
+const RoomSchema = new mongoose.Schema<Room>(
+  {
     id: {
-        type: String,
-            required: true,
-      },
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
-required: true,
+      required: true,
     },
     desc: {
       type: String,
       required: false,
     },
-    user: [{ name: String, pp: String }]
-  }, {timestamps: true});
-   
-  export default mongoose.models?.Room || mongoose.model<Room>('Room', RoomShema);
+    user: [{ name: String, pp: String }],
+    message: [
+      {
+        sender: String,
+        pp: String,
+        text: String,
+        date: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+  },
+  { timestamps: true }
+);
+
+export default mongoose.models?.Room ||
+  mongoose.model<Room>("Room", RoomSchema);

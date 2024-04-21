@@ -39,7 +39,7 @@ function Roomcard(rooms: any) {
             avatars={rooms.rooms.user.map((name: any) => name.pp.toString())}
           />
           <Button>
-            <Link href={`/room?id=${rooms.rooms.id}`}>Join!</Link>
+            <a href={`/room?id=${rooms.rooms.id}`}>Join!</a>
           </Button>
         </div>
       </CardFooter>
