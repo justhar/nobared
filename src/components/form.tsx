@@ -52,7 +52,8 @@ function RoomForm() {
     );
 
     if (await getRoomId(user?.id)) {
-      router.push("/room?id=" + user?.id);
+      router.push("/room?id=" + user?.id, { shallow: true } as any);
+      // router.push('/about', undefined, { shallow: true })
     }
     // toast({
     //   title: "You submitted the following values:",

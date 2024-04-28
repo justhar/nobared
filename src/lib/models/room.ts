@@ -23,7 +23,12 @@ const RoomSchema = new mongoose.Schema<Room>(
       type: String,
       required: false,
     },
-    user: [{ name: String, pp: String }],
+    user: [
+      {
+        name: String,
+        pp: String,
+      },
+    ],
     message: [
       {
         sender: String,
@@ -31,8 +36,9 @@ const RoomSchema = new mongoose.Schema<Room>(
         text: String,
         date: {
           type: Date,
-          default: Date.now,
+          default: Date.now(),
         },
+        type: String,
       },
     ],
   },

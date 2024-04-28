@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -19,7 +18,6 @@ import Link from "next/link";
 // }
 
 function Roomcard(rooms: any) {
-  console.log(rooms.rooms.user.map((name: any) => name));
   return (
     <Card key={rooms.rooms.id}>
       <CardHeader>
@@ -39,7 +37,7 @@ function Roomcard(rooms: any) {
             avatars={rooms.rooms.user.map((name: any) => name.pp.toString())}
           />
           <Button>
-            <a href={`/room?id=${rooms.rooms.id}`}>Join!</a>
+            <Link href={`/room?id=${rooms.rooms.id}`}>Join!</Link>
           </Button>
         </div>
       </CardFooter>

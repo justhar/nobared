@@ -1,12 +1,46 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Roomcard from "@/components/roomcard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { getRooms } from "@/lib/actions/room.actions";
 
-async function Explore() {
-  const rooms: any = await getRooms();
+function Explore() {
+  const [rooms, setRooms] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredRooms, setFilteredRooms] = useState(rooms);
+
+  useEffect(() => {
+    setFilteredRooms(
+      rooms.filter((room: { name: string }) =>
+        room.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, rooms]);
+
+  useEffect(() => {
+    fetch("/api/rooms", {})
+      .then((response) => response.json())
+      .then((data) => {
+        setRooms(data);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+
+    const intervalId = setInterval(() => {
+      fetch("/api/rooms", {})
+        .then((response) => response.json())
+        .then((data) => {
+          setRooms(data);
+        })
+        .catch((error) => console.error("Error fetching data:", error));
+    }, 3000); // fetch every 3 seconds
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
   return (
     <div className="flex justify-center min-h-[calc(100vh-5rem)]">
       <div className="max-w-[77rem] mt-3 w-full flex flex-col gap-5 p-3 text-textPrimary">
@@ -20,23 +54,27 @@ async function Explore() {
           <Input
             className="focus-visible:ring-0 sm:ml-7 sm:mt-0 mt-2"
             placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        {rooms[0] ? (
-          rooms.map((item: any) => (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-between gap-5">
-              <Roomcard rooms={item} key={item.id} />
+        {filteredRooms[0] ? (
+          filteredRooms.map((item: any) => (
+            <div
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-between gap-5"
+              key={item.id}
+            >
+              <Roomcard rooms={item} />
             </div>
           ))
         ) : (
           <div className="justify-center m-auto max-w-lg flex center text-center pl-10 pr-10">
             <h2 className="scroll-m-20 pb-2 text-zinc-500 text-3xl font-semibold tracking-tight first:mt-0">
               theres no room available at the moment. please make a room to
-              watch together.
+              watch together.{" "}
             </h2>
           </div>
         )}
-        {/* {rooms} */}
       </div>
     </div>
   );

@@ -19,13 +19,14 @@ async function Room({ searchParams }: { searchParams: any }) {
     redirect("/explore");
   }
   const rooms = await getRoomId(searchParams.id);
-  // console.log(rooms);
+  // console.log(rooms, "heyy");
   if (!rooms) {
     notFound();
   }
   if (searchParams.id !== user?.user.id) {
     connectRoom(searchParams.id, user?.user.username, user?.user.picture);
   }
+  // console.log(initialMessage);
   // console.log(JSON.stringify(searchParams.id));
   return (
     <div>
@@ -36,7 +37,7 @@ async function Room({ searchParams }: { searchParams: any }) {
             userid: {user.user.id}
           </h1>
         </div>
-        <Message chatId={searchParams.id} />
+        <Message chatId={searchParams.id} room={rooms} />
       </main>
     </div>
   );
