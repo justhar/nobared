@@ -36,7 +36,7 @@ function Message(props: any) {
 
     try {
       setCanSendMessage(false);
-      sendMessage(props.chatId, user?.username, user?.picture, input);
+      sendMessage(props.chatId, user?.id, user?.username, user?.picture, input);
       setInput("");
       // if (messageCount >= 2) {
       setCanSendMessage(false);
@@ -131,8 +131,7 @@ function Message(props: any) {
 
               const hasNextMessageFromSameUser =
                 index < messages.length - 1 &&
-                messages[index].sender === messages[index + 1].sender;
-
+                messages[index].id === messages[index + 1].id;
               if (data.type) {
                 return (
                   <div
@@ -141,7 +140,7 @@ function Message(props: any) {
                   >
                     <Badge className="bg-gray-200">
                       <span className="text-purple-600">
-                        {data.name}{" "}
+                        {data.sender}{" "}
                         <span className="text-gray-500">
                           {data.type === "join" ? "joined" : "left"}
                         </span>

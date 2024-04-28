@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { date } from "zod";
 
 interface Room {
   id: string;
@@ -25,20 +24,21 @@ const RoomSchema = new mongoose.Schema<Room>(
     },
     user: [
       {
-        name: String,
-        pp: String,
+        name: { type: String },
+        pp: { type: String },
       },
     ],
     message: [
       {
-        sender: String,
-        pp: String,
-        text: String,
+        sender: { type: String },
+        id: { type: String },
+        pp: { type: String },
+        text: { type: String },
         date: {
           type: Date,
           default: Date.now(),
         },
-        type: String,
+        type: { type: String },
       },
     ],
   },

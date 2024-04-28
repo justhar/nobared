@@ -26,8 +26,6 @@ async function Room({ searchParams }: { searchParams: any }) {
   if (searchParams.id !== user?.user.id) {
     connectRoom(searchParams.id, user?.user.username, user?.user.picture);
   }
-  // console.log(initialMessage);
-  // console.log(JSON.stringify(searchParams.id));
   return (
     <div>
       <main className="grid min-h-[calc(100vh-5rem)] gap-4 overflow-auto p-4 md:grid-cols-3">

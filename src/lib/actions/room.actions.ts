@@ -53,14 +53,19 @@ export const deleteRoom = async (id: string) => {
 
 export const sendMessage = async (
   id: string,
+  userId: string | undefined,
   sender: string | undefined,
   pp: string | undefined,
   text: string
 ) => {
   await connectMongoDB();
-  await Room.updateOne({ id }, { $push: { message: [{ sender, pp, text }] } });
+  await Room.updateOne(
+    { id },
+    { $push: { message: { sender, id: userId, pp, text } } }
+  );
   await pusherServer.trigger(`chat_${id}`, "message", {
     sender,
+    id: userId,
     pp,
     text,
     date: Date.now(),
@@ -78,7 +83,7 @@ export const connectRoom = async (id: string, name: string, pp: string) => {
       { $push: { message: [{ sender: name, type: "join" }] } }
     );
     await pusherServer.trigger(`chat_${id}`, "connection", {
-      name,
+      sender: name,
       type: "join",
     });
   }
@@ -93,7 +98,7 @@ export const leaveRoom = async (id: string, name: string | undefined) => {
   );
 
   await pusherServer.trigger(`chat_${id}`, "connection", {
-    name,
+    sender: name,
     type: "leave",
   });
 };
