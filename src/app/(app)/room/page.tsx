@@ -3,23 +3,33 @@ import { connectRoom, getRoomId } from "@/lib/actions/room.actions";
 import Message from "@/components/chat";
 import { validateRequest } from "@/lib/auth";
 import { Metadata } from "next";
+import Host from "@/components/streamHost";
+import View from "@/components/streamView";
+import { AvatarStack } from "@/components/ui/avatar-stack";
+import room from "@/lib/models/room";
+import Copy from "@/components/copy";
+import Leave from "@/components/leave";
 
 export const metadata: Metadata = {
-  title: "room | nobared",
+  title: `room | nobared`,
   description: "go watch together in nobared",
 };
 
-async function Room({ searchParams }: { searchParams: any }) {
+type searchParams = {
+  searchParams: {
+    id: string;
+  };
+};
+
+async function Room({ searchParams }: searchParams) {
   const user = await validateRequest();
-  // console.log(user.user?.id);
   if (!user.user) {
-    redirect("/signin");
+    redirect(`/signin?cb=${searchParams.id}`);
   }
   if (!searchParams.id) {
     redirect("/explore");
   }
   const rooms = await getRoomId(searchParams.id);
-  // console.log(rooms, "heyy");
   if (!rooms) {
     notFound();
   }
@@ -27,19 +37,38 @@ async function Room({ searchParams }: { searchParams: any }) {
     connectRoom(searchParams.id, user?.user.username, user?.user.picture);
   }
   return (
-    <div>
-      <main className="grid min-h-[calc(100vh-5rem)] gap-4 overflow-auto p-4 md:grid-cols-3">
-        <div className="md:col-span-2 relative flex-col items-start gap-8 flex bg-red-900">
-          <h1>
-            {JSON.stringify(searchParams.id)}
-            userid: {user.user.id}
-          </h1>
+    <>
+      <main className="min-h-[calc(100vh-5rem)] overflow-auto p-4 ">
+        <div className="flex justify-between">
+          <p className="my-auto pb-3">room {rooms.name}</p>
+          <Leave id={searchParams.id} />
         </div>
-        <Message chatId={searchParams.id} room={rooms} />
+        {searchParams.id == user?.user.id ? (
+          <Host
+            roomId={searchParams.id}
+            room={rooms}
+            className="w-full h-full object-cover aspect-video "
+          />
+        ) : (
+          <View
+            room={rooms}
+            roomId={searchParams.id}
+            className="w-full h-full object-cover aspect-video "
+          />
+        )}
+        <div className="mt-3 mb-3 flex-row flex justify-between">
+          <AvatarStack
+            maxAvatarsAmount={4}
+            avatars={rooms.user.map((name: any) => name.pp.toString())}
+          ></AvatarStack>
+          <Copy room={rooms.id} />
+        </div>
+        <div className="max-h-[calc(100vh-5rem)] mt-3">
+          <Message chatId={searchParams.id} room={rooms} />
+        </div>
       </main>
-    </div>
+    </>
   );
-  // return <>{JSON.stringify(searchParams)}</>;
 }
 
 export default Room;

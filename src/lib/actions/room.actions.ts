@@ -3,6 +3,8 @@
 import connectMongoDB from "../db";
 import Room from "../models/room";
 import { pusherServer } from "../pusher";
+import ytstream from "yt-stream";
+import ytdl from "ytdl-core";
 
 export const createRoom = async (
   id: string | undefined,
@@ -33,22 +35,16 @@ export const getRoomId = async (id: string | undefined) => {
   await connectMongoDB();
   return JSON.parse(JSON.stringify(await Room.findOne({ id: id })));
 };
-// export const getRoom = async (id: string | undefined) => {
-//     await connectMongoDB()
-//     return JSON.parse(JSON.stringify(await Room.findOne({id: id})))
-// }
 
 export const getRooms = async () => {
   await connectMongoDB();
   return await Room.find();
 };
 
-// TODO: delete the video too
 export const deleteRoom = async (id: string) => {
   await connectMongoDB();
   const result = await Room.deleteOne({ id: id });
   await pusherServer.trigger(`chat_${id}`, "status", { status: "deleted" });
-  return result;
 };
 
 export const sendMessage = async (
@@ -69,6 +65,42 @@ export const sendMessage = async (
     pp,
     text,
     date: Date.now(),
+  });
+};
+
+export const searchVid = async (input: string) => {
+  return await ytstream.search(input);
+};
+
+export const pickVideo = async (videoId: string, roomId: string) => {
+  const info = await ytdl.getInfo(videoId);
+
+  const audio = ytdl.chooseFormat(info.formats, {
+    quality: "lowestaudio",
+    filter: "audioonly",
+  });
+  const video = ytdl.chooseFormat(info.formats, {
+    quality: "highest",
+    filter: "videoonly",
+  });
+
+  await connectMongoDB();
+  await Room.updateOne(
+    { id: roomId },
+    { $set: { video: video.url, audio: audio.url } }
+  );
+  await pusherServer.trigger(`video_${roomId}`, "video", {
+    video: video.url,
+    audio: audio.url,
+  });
+  return { audio: audio.url, video: video.url };
+};
+
+export const unsetVideo = async (id: string) => {
+  await Room.updateOne({ id }, { $unset: { video: 1, audio: 1 } });
+  await pusherServer.trigger(`video_${id}`, "video", {
+    video: "unset",
+    audio: "unset",
   });
 };
 

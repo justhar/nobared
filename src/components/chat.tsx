@@ -5,23 +5,20 @@ import { pusherClient } from "@/lib/pusher";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
-import { CornerDownLeft } from "lucide-react";
+import { CornerDownLeft, LogOut } from "lucide-react";
 import { deleteRoom, leaveRoom, sendMessage } from "@/lib/actions/room.actions";
 import { toast } from "./ui/use-toast";
 import { useSession } from "@/lib/providers/Sessions.provider";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ScrollArea } from "./ui/scroll-area";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Badge } from "./ui/badge";
-// import { Toast } from "./ui/toast";
-// import { useRouter } from "next/router";
 
 function Message(props: any) {
   const { user } = useSession();
   const route = useRouter();
-  // const router = useRouter();
   const [input, setInput] = useState<string>("");
   const [canSendMessage, setCanSendMessage] = useState(true);
   const [messages, setMessages] = useState<any[]>(props.room.message);
@@ -87,44 +84,22 @@ function Message(props: any) {
   }, [messages]);
   return (
     <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 col-span-1">
-      <div className="flex-1">
-        <div className=" flex-row flex justify-between">
-          <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-auto">
-            Chat Room
-          </h2>
-          <div className="mb-2">
-            {user?.id === props.chatId ? (
-              <Button
-                variant={"destructive"}
-                onClick={() => {
-                  deleteRoom(props.chatId);
-                  pusherClient.unbind_all();
-                  pusherClient.unsubscribe(`chat_${props.chatId}`);
-                  route.push("/explore");
-                }}
-              >
-                delete room
-              </Button>
-            ) : (
-              <Button
-                variant={"destructive"}
-                onClick={() => {
-                  leaveRoom(props.chatId, user?.username);
-                  pusherClient.unsubscribe(`chat_${props.chatId}`);
-                  pusherClient.unbind_all();
-
-                  route.push("/explore");
-                }}
-              >
-                leave room
-              </Button>
-            )}
-          </div>
+      <div className=" flex-row flex justify-between">
+        <div className="flex-col mb-2">
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+            Chat room
+          </h4>
+          <p className="text-sm text-muted-foreground">
+            room {props.room.name}
+          </p>
         </div>
-        {/* {JSON.stringify(user?.id)} */}
       </div>
-      <div className="mb-4 h-full max-h-[50vh]">
-        <ScrollArea className="h-full max-h-[50vh] flex-1 rounded-md border p-3 overflow-y-auto mb-4">
+      {/* {JSON.stringify(user?.id)} */}
+      {
+        // TODO: SHOW ALL THE PARTICIPANT
+      }
+      <div className="mb-4">
+        <ScrollArea className="h-[50vh] flex-1 rounded-md border p-3 overflow-y-auto mb-4">
           <div ref={scrollDownRef}>
             {messages.map((data, index) => {
               const isCurrentUser = data.sender === user?.username;
@@ -159,7 +134,7 @@ function Message(props: any) {
                   >
                     <div
                       className={cn(
-                        "flex flex-col space-y-2 text-base max-w-xs mx-2",
+                        "flex flex-col space-y-2 text-base max-w-[50vw] mx-2",
                         {
                           "order-1 items-end": isCurrentUser,
                           "order-2 items-start": !isCurrentUser,
@@ -209,10 +184,7 @@ function Message(props: any) {
           </div>
         </ScrollArea>
       </div>
-      <div
-        className="relative overflow-hidden max-h-[30vh] h-full rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
-        x-chunk="dashboard-03-chunk-1"
-      >
+      <div className="relative overflow-hidden max-h-[30vh] rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring">
         <Label htmlFor="message" className="sr-only">
           Message
         </Label>
@@ -223,7 +195,7 @@ function Message(props: any) {
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             canSendMessage
-              ? "Type your message here..."
+              ? "Type your message here... (Enter to send message)"
               : "Wait 2 sec to send message again"
           }
           onKeyDown={(e) => {
@@ -235,16 +207,6 @@ function Message(props: any) {
           }}
           className="min-h-12 w-full h-full resize-none border-0 p-3 shadow-none focus-visible:ring-0"
         />
-        <div className="absolute bottom-0 right-0 flex items-end p-3 pt-0">
-          <Button
-            onClick={() => sendMessageHandler()}
-            size="sm"
-            className="gap-1.5"
-          >
-            Send Message
-            <CornerDownLeft className="size-3.5" />
-          </Button>
-        </div>
       </div>
     </div>
   );

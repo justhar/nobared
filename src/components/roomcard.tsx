@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { AvatarStack } from "@/components/ui/avatar-stack";
 import { Button } from "./ui/button";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // interface Rooms {
 //   _id: number;
@@ -18,6 +18,7 @@ import Link from "next/link";
 // }
 
 function Roomcard(rooms: any) {
+  const router = useRouter();
   return (
     <Card key={rooms.rooms.id}>
       <CardHeader>
@@ -30,14 +31,10 @@ function Roomcard(rooms: any) {
         <div className="flex flex-row w-full justify-between">
           <AvatarStack
             maxAvatarsAmount={2}
-            // avatars={[
-            //   "https://lh3.googleusercontent.com/a/ACg8ocKtAfBlHs2s6zeANJXQvELzn9OhZILH65prLlp6hF3R7Tmzj2k=s96-c",
-            //   "https://lh3.googleusercontent.com/a/ACg8ocKtAfBlHs2s6zeANJXQvELzn9OhZILH65prLlp6hF3R7Tmzj2k=s96-c",
-            // ]}
             avatars={rooms.rooms.user.map((name: any) => name.pp.toString())}
           />
-          <Button>
-            <Link href={`/room?id=${rooms.rooms.id}`}>Join!</Link>
+          <Button onClick={() => router.push(`/room?id=${rooms.rooms.id}`)}>
+            <p>Join!</p>
           </Button>
         </div>
       </CardFooter>

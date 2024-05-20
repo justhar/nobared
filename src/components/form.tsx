@@ -20,9 +20,14 @@ import { z } from "zod";
 import { redirect, useRouter } from "next/navigation";
 
 const FormSchema = z.object({
-  roomname: z.string().min(2, {
-    message: "Room name must be at least 2 characters.",
-  }),
+  roomname: z
+    .string()
+    .min(2, {
+      message: "room name must be at least 2 chars",
+    })
+    .max(13, {
+      message: "room name cannot be more than 13 chars",
+    }),
   desc: z.string(),
 });
 
@@ -41,7 +46,6 @@ function RoomForm() {
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
-    // console.log(user);
 
     await createRoom(
       user?.id,

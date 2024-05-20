@@ -6,15 +6,17 @@ import { Image } from "next/dist/client/image-component";
 import { toast } from "@/components/ui/use-toast";
 import { createGoogleAuthorizationURL } from "@/lib/actions/user.actions";
 import { useSession } from "@/lib/providers/Sessions.provider";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 
 function Signin() {
   const { user } = useSession();
+  const params = useSearchParams();
+  const cb = params.get("cb");
   if (user) {
     redirect("/explore");
   }
   const handleClick = async () => {
-    const res = await createGoogleAuthorizationURL();
+    const res = await createGoogleAuthorizationURL(cb);
     if (res.error) {
       toast({
         variant: "destructive",

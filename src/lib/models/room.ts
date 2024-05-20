@@ -4,6 +4,8 @@ interface Room {
   id: string;
   name: string;
   desc: string;
+  video: string;
+  audio: string;
   user: [];
   message: [];
 }
@@ -19,6 +21,14 @@ const RoomSchema = new mongoose.Schema<Room>(
       required: true,
     },
     desc: {
+      type: String,
+      required: false,
+    },
+    video: {
+      type: String,
+      required: false,
+    },
+    audio: {
       type: String,
       required: false,
     },

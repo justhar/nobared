@@ -5,7 +5,6 @@ import { validateRequest } from "@/lib/auth";
 
 export default async function Home() {
   const user = await validateRequest();
-  // console.log(user);
   return (
     <main className="flex flex-col items-center justify-center min-h-[calc(100vh-5rem)] text-center px-3">
       <Alert className="sm:hidden mb-8">

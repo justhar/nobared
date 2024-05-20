@@ -6,6 +6,9 @@ import { validateRequest } from "@/lib/auth";
 
 export default async function Create() {
   const user = await validateRequest();
+  if (!user.user) {
+    redirect("/signin");
+  }
 
   if (await getRoomId(user?.user?.id)) {
     redirect("/room?id=" + user?.user?.id);

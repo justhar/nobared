@@ -1,22 +1,27 @@
 "use server";
 
 // import connectMongoDB from "../db";
-import { google, lucia, validateRequest } from "@/lib/auth"
-import { cookies } from "next/headers"
-import { generateCodeVerifier, generateState } from "arctic"
+import { google, lucia, validateRequest } from "@/lib/auth";
+import { cookies } from "next/headers";
+import { generateCodeVerifier, generateState } from "arctic";
 
-export const createGoogleAuthorizationURL = async () => {
+export const createGoogleAuthorizationURL = async (cb: string | null) => {
   try {
-    const state = generateState()
-    const codeVerifier = generateCodeVerifier()
+    const state = generateState();
+    const codeVerifier = generateCodeVerifier();
 
     cookies().set("codeVerifier", codeVerifier, {
       httpOnly: true,
-    })
+    });
 
     cookies().set("state", state, {
       httpOnly: true,
-    })
+    });
+
+    cb &&
+      cookies().set("cb", cb as string, {
+        httpOnly: true,
+      });
 
     const authorizationURL = await google.createAuthorizationURL(
       state,
@@ -24,44 +29,44 @@ export const createGoogleAuthorizationURL = async () => {
       {
         scopes: ["email", "profile"],
       }
-    )
+    );
 
     return {
       success: true,
       data: JSON.parse(JSON.stringify(authorizationURL)),
-    }
+    };
   } catch (error: any) {
     return {
       error: error?.message,
-    }
+    };
   }
-}
+};
 
 export const signOut = async () => {
   try {
-    const { session } = await validateRequest()
+    const { session } = await validateRequest();
 
     if (!session) {
       return {
         error: "Unauthorized",
-      }
+      };
     }
 
-    await lucia.invalidateSession(session.id)
+    await lucia.invalidateSession(session.id);
 
-    const sessionCookie = lucia.createBlankSessionCookie()
+    const sessionCookie = lucia.createBlankSessionCookie();
 
     cookies().set(
       sessionCookie.name,
       sessionCookie.value,
       sessionCookie.attributes
-    )
+    );
   } catch (error: any) {
     return {
       error: error?.message,
-    }
+    };
   }
-}
+};
 // import { User } from "../models/user";
 
 // interface Params {
@@ -74,7 +79,7 @@ export const signOut = async () => {
 //   }: Params): Promise<void> {
 //     try {
 //       connectMongoDB();
-  
+
 //       await User.updateOne(
 //         { email },
 //         { $set: { name: username, age: 30 } }
