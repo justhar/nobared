@@ -1,4 +1,5 @@
 import { getRooms } from "@/lib/actions/room.actions";
+export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   const roomData = await getRooms();
