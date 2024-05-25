@@ -93,12 +93,10 @@ export const pickVideo = async (videoId: string, roomId: string) => {
   });
   let video;
   try {
-    console.log("its 135");
     video = ytdl.chooseFormat(info.formats, {
       quality: "135",
     });
   } catch {
-    console.log("its highest");
     video = ytdl.chooseFormat(info.formats, {
       quality: "highestvideo",
       filter: "videoonly",

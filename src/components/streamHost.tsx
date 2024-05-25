@@ -110,14 +110,12 @@ function Host(props: any) {
         audioInput.current.currentTime = videoRef.current.getCurrentTime();
       }
     }
-    console.log("play", videoRef.current?.props.playing);
   }
 
   function bufferHandler() {
     if (audioInput.current && videoRef.current) {
       audioInput.current.currentTime = videoRef.current.getCurrentTime();
     }
-    console.log("buffering");
     syncRoom(props.roomId, "seek", videoRef.current?.getCurrentTime());
   }
   useEffect(() => {
@@ -133,7 +131,6 @@ function Host(props: any) {
               props.roomId
             );
           }, 3000);
-        console.log(data, videoRef.current?.props.playing);
       },
       3000
     );
@@ -154,7 +151,6 @@ function Host(props: any) {
             pusherClient.unsubscribe(`chat_${props.roomId}`);
             pusherClient.unsubscribe(`video_${props.roomId}`);
             audioInput.current?.pause();
-            console.log("delete");
             deleteRoom(props.roomId);
             route.replace("/explore");
             // videoRef.current?.getInternalPlayer().current.pause();

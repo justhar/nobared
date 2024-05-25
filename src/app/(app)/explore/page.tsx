@@ -43,7 +43,7 @@ function Explore() {
       .catch((error) => console.error("Error fetching data:", error));
 
     const intervalId = setInterval(() => {
-      fetch("/api/rooms", {})
+      fetch("/api/rooms", { cache: "no-store" })
         .then((response) => response.json())
         .then((data) => {
           setRooms(data);

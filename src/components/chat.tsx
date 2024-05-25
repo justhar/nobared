@@ -44,7 +44,7 @@ function Message(props: any) {
       setCanSendMessage(false);
       setTimeout(() => {
         setCanSendMessage(true);
-      }, 3000);
+      }, 500);
       // }
     } catch (e) {
       // toast.error("Something went wrong. Please try again later.");
@@ -75,7 +75,7 @@ function Message(props: any) {
       route.push("/explore?del=true");
     });
 
-    scrollDownRef.current?.scrollIntoView(false);
+    // scrollDownRef.current?.scrollIntoView(false);
     const handleBeforeUnload = async (event: any) => {
       event.preventDefault();
     };
@@ -88,10 +88,10 @@ function Message(props: any) {
     };
   }, []);
 
-  const scrollDownRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    scrollDownRef.current?.scrollIntoView(false);
-  }, [messages]);
+  // const scrollDownRef = useRef<HTMLDivElement | null>(null);
+  // useEffect(() => {
+  //   scrollDownRef.current?.scrollIntoView(false);
+  // }, [messages]);
   return (
     <>
       <div className="mt-3 mb-3 flex-row flex justify-between">
@@ -116,7 +116,7 @@ function Message(props: any) {
           }
           <div className="mb-4">
             <ScrollArea className="h-[50vh] flex-1 rounded-md border p-3 overflow-y-auto mb-4">
-              <div ref={scrollDownRef}>
+              <div>
                 {messages.map((data, index) => {
                   const isCurrentUser = data.sender === user?.username;
 
@@ -212,7 +212,7 @@ function Message(props: any) {
               placeholder={
                 canSendMessage
                   ? "Type your message here... (Enter to send message)"
-                  : "Wait 2 sec to send message again"
+                  : "Wait 0.5 sec to send message again"
               }
               onKeyDown={(e) => {
                 if (e.key == "Enter") {

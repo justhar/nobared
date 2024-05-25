@@ -8,7 +8,9 @@ export default function Copy(props: any) {
   return (
     <Button
       onClick={(e) => {
-        navigator.clipboard.writeText(props.room);
+        navigator.clipboard.writeText(
+          `https://nobared.vercel.app/room?id=${props.room}`
+        );
         toast({
           title: "share it!",
           description: "the link is copied to your clipboard",

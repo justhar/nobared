@@ -39,8 +39,6 @@ function View(props: any) {
       } else {
         setVideo(data.video);
         setAudio(data.audio);
-        console.log("data", data.audio);
-        console.log("Audio", audio);
         if (audioInput.current) {
           audioInput.current.src = data.audio;
           // audio;
@@ -77,7 +75,6 @@ function View(props: any) {
             audioInput.current.currentTime = data.seek;
           }
           audioInput.current?.play();
-          console.log(data);
       }
     });
 
@@ -107,12 +104,10 @@ function View(props: any) {
       const playerElement = videoRef.current.getInternalPlayer() as Element;
       screenfull.request(playerElement);
     }
-    console.log(audio);
   };
 
   function expiredHandler(e: any) {
     setExpired(true);
-    console.log(e);
   }
 
   return (

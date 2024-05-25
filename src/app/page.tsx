@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { validateRequest } from "@/lib/auth";
+import Image from "next/image";
+import Github from "../../public/github-mark-white.svg";
 
 export default async function Home() {
   const user = await validateRequest();
@@ -32,6 +34,9 @@ export default async function Home() {
           <Link href="/explore" className="text-center flex ">
             <Button variant="ghost">
               <p className="py-2"> Explore some rooms</p>
+            </Button>
+            <Button className="py-2 border" variant={"ghost"}>
+              <Image src={Github} alt="source code" className="size-3.5" />
             </Button>
           </Link>
         )}
