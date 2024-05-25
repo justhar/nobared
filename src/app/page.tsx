@@ -36,7 +36,7 @@ export default async function Home() {
               <p className="py-2"> Explore some rooms</p>
             </Button>
             <Button className="py-2 border" variant={"ghost"}>
-              <Image src={Github} alt="source code" className="size-3.5" />
+              <Image src={Github} alt="source code" className="size-3.5 ml-1" />
             </Button>
           </Link>
         )}
