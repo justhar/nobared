@@ -93,6 +93,7 @@ function View(props: any) {
         audioInput.current.currentTime = videoRef.current.getCurrentTime();
       }
     }
+    setExpired(false);
   }
 
   const handleClickFullscreen = () => {
@@ -171,7 +172,9 @@ function View(props: any) {
                   <Button
                     onClick={() => {
                       setGone(true);
-                      audioInput.current?.play();
+                      if (videoPlaying) {
+                        audioInput.current?.play();
+                      }
                       if (audioInput.current && videoRef.current) {
                         audioInput.current.currentTime =
                           videoRef.current?.getCurrentTime();

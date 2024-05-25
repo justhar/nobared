@@ -72,23 +72,27 @@ function Explore() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        {filteredRooms[0] ? (
-          filteredRooms.map((item: any) => (
-            <div
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-between gap-5"
-              key={item.id}
-            >
-              <Roomcard rooms={item} />
+        <div
+          className={`
+            ${
+              filteredRooms[0] &&
+              "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5"
+            }
+             justify-between gap-5`}
+        >
+          {filteredRooms[0] ? (
+            filteredRooms.map((item: any) => (
+              <Roomcard rooms={item} key={item.id} />
+            ))
+          ) : (
+            <div className="justify-center m-auto max-w-lg flex center text-center pl-10 pr-10">
+              <h2 className="scroll-m-20 pb-2 text-zinc-500 text-3xl font-semibold  tracking-tight mt-10">
+                theres no room available at the moment. please make a room to
+                watch together.{" "}
+              </h2>
             </div>
-          ))
-        ) : (
-          <div className="justify-center m-auto max-w-lg flex center text-center pl-10 pr-10">
-            <h2 className="scroll-m-20 pb-2 text-zinc-500 text-3xl font-semibold tracking-tight first:mt-0">
-              theres no room available at the moment. please make a room to
-              watch together.{" "}
-            </h2>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
