@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Profile from "./profile";
 import { useSession } from "@/lib/providers/Sessions.provider";
+import { useRouter } from "next/navigation";
 
 function Navbar() {
+  const route = useRouter();
   const { user } = useSession();
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -31,8 +33,8 @@ function Navbar() {
               </div>
             ) : (
               <div className="flex items-center space-x-7">
-                <Button>
-                  <Link href="/signin">join us!</Link>
+                <Button onClick={() => route.push("/signin")}>
+                  <p>join us!</p>
                 </Button>
               </div>
             )}

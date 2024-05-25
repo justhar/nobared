@@ -72,6 +72,18 @@ export const searchVid = async (input: string) => {
   return await ytstream.search(input);
 };
 
+export const sendStreamStat = async (
+  stat: boolean | undefined,
+  seek: number | undefined,
+  roomId: string
+) => {
+  await pusherServer.trigger(`video_${roomId}`, "stream", {
+    type: "newuser",
+    seek,
+    stat,
+  });
+};
+
 export const pickVideo = async (videoId: string, roomId: string) => {
   const info = await ytdl.getInfo(videoId);
 
@@ -79,10 +91,19 @@ export const pickVideo = async (videoId: string, roomId: string) => {
     quality: "lowestaudio",
     filter: "audioonly",
   });
-  const video = ytdl.chooseFormat(info.formats, {
-    quality: "highest",
-    filter: "videoonly",
-  });
+  let video;
+  try {
+    console.log("its 135");
+    video = ytdl.chooseFormat(info.formats, {
+      quality: "135",
+    });
+  } catch {
+    console.log("its highest");
+    video = ytdl.chooseFormat(info.formats, {
+      quality: "highestvideo",
+      filter: "videoonly",
+    });
+  }
 
   await connectMongoDB();
   await Room.updateOne(
@@ -104,7 +125,37 @@ export const unsetVideo = async (id: string) => {
   });
 };
 
-export const connectRoom = async (id: string, name: string, pp: string) => {
+export const syncRoom = async (
+  id: string,
+  type: string,
+  seek: number | undefined
+) => {
+  switch (type) {
+    case "play":
+      await pusherServer.trigger(`video_${id}`, "stream", {
+        type,
+        seek,
+      });
+      break;
+    case "pause":
+      await pusherServer.trigger(`video_${id}`, "stream", {
+        type,
+        seek,
+      });
+      break;
+    case "seek":
+      await pusherServer.trigger(`video_${id}`, "stream", {
+        type,
+        seek,
+      });
+  }
+};
+
+export const connectRoom = async (
+  id: string,
+  name: string | undefined,
+  pp: string | undefined
+) => {
   await connectMongoDB();
   if (await Room.findOne({ id, "user.name": name })) {
     return 0;
@@ -117,13 +168,17 @@ export const connectRoom = async (id: string, name: string, pp: string) => {
     await pusherServer.trigger(`chat_${id}`, "connection", {
       sender: name,
       type: "join",
+      pp: pp,
     });
   }
 };
 
 export const leaveRoom = async (id: string, name: string | undefined) => {
   await connectMongoDB();
-  await Room.updateOne({ id }, { $pull: { user: { name } } });
+  await Room.updateOne(
+    { id, "user.name": name },
+    { $pull: { user: { name } } }
+  );
   await Room.updateOne(
     { id },
     { $push: { message: [{ sender: name, type: "leave" }] } }

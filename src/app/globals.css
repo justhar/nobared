@@ -2,7 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+.view > video::-webkit-media-controls {
+  display: none;
+}
 
+video {
+  border-radius: 0.75rem /* 12px */;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -49,7 +55,6 @@
     --ring: 240 4.9% 83.9%;
   }
 }
-
 
 @layer base {
   * {

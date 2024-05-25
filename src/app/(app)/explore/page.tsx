@@ -5,11 +5,19 @@ import Roomcard from "@/components/roomcard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
 
 function Explore() {
+  const route = useRouter();
   const [rooms, setRooms] = useState([]);
+  const searchParams = useSearchParams();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredRooms, setFilteredRooms] = useState(rooms);
+  const [dele, setDele] = useState<boolean>(true);
+
+  const del = searchParams.get("del");
 
   useEffect(() => {
     setFilteredRooms(
@@ -19,6 +27,13 @@ function Explore() {
     );
   }, [searchTerm, rooms]);
 
+  if (dele && del) {
+    toast({
+      title: "the room was deleted",
+      description: "by the host",
+    });
+    setDele(false);
+  }
   useEffect(() => {
     fetch("/api/rooms", {})
       .then((response) => response.json())
@@ -48,9 +63,7 @@ function Explore() {
           Explore some room
         </h2>
         <div className="flex flex-col sm:flex-row">
-          <Button>
-            <Link href="/create">New Room</Link>
-          </Button>
+          <Button onClick={() => route.push("/create")}>New Room</Button>
           <Input
             className="focus-visible:ring-0 sm:ml-7 sm:mt-0 mt-2"
             placeholder="Search..."

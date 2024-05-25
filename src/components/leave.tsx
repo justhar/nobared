@@ -21,6 +21,7 @@ export default function Leave(props: any) {
             deleteRoom(props.id);
             pusherClient.unbind_all();
             pusherClient.unsubscribe(`chat_${props.id}`);
+            pusherClient.unsubscribe(`video_${props.id}`);
             route.push("/explore");
           }}
         >
@@ -33,6 +34,7 @@ export default function Leave(props: any) {
           onClick={() => {
             leaveRoom(props.id, user?.username);
             pusherClient.unsubscribe(`chat_${props.id}`);
+            pusherClient.unsubscribe(`video_${props.id}`);
             pusherClient.unbind_all();
 
             route.push("/explore");
