@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@distube/ytdl-core": "^4.15.1",
     "@hookform/resolvers": "^3.3.4",
     "@lucia-auth/adapter-mongodb": "^1.0.3",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -47,7 +48,6 @@
     "use-sound": "^4.0.1",
     "youtube-stream-url": "^2.4.3",
     "yt-stream": "^1.4.14",
-    "ytdl-core": "^4.11.5",
     "zod": "^3.22.4"
   },
   "devDependencies": {

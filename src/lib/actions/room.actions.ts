@@ -4,7 +4,7 @@ import connectMongoDB from "../db";
 import Room from "../models/room";
 import { pusherServer } from "../pusher";
 import ytstream from "yt-stream";
-import ytdl from "ytdl-core";
+import ytdl from "@distube/ytdl-core";
 
 export const createRoom = async (
   id: string | undefined,
